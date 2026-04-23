@@ -1,0 +1,15 @@
+/*
+whenever we're working with files we must use try-catch block to handle possilbe IO Execptions. 
+Two modes for writing - write and append
+    Write Mode:
+        1. if file doesn't exist, Java will create it and write the contents to it
+        2. if it does, java will overwrite contents of file with new content
+    Append Mode:
+        1. if file doesn't exist, java will create it and write contents to it
+        2. if file exists, java write new contents to the file after the existing contents
+    Classes for writing: PrintWriter and FileWriter
+    Reading from a file
+        file you want to red from must exist prior
+        file you are trying to read from doesn't exist, will get FileNotFoundException
+        classes for reading: Scanner and File
+*/

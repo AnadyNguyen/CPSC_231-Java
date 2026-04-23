@@ -1,0 +1,24 @@
+=== Wild Fire Report ===
+Grid Size:5 x 5
+
+Full Grid: 
+L M L L H 
+M H H L H 
+L . H . H 
+L L M L H 
+H H H H H 
+
+Category Totals: 
+High (H): 12
+Medium (M): 3
+Low (L): 8
+Unknown (.): 2
+
+High-Risk Zones Per Row:
+Row 1: 1
+Row 2: 3
+Row 3: 2
+Row 4: 1
+Row 5: 5
+
+Row with MOST High-Risk Zones: Row 5 (5 H zones)

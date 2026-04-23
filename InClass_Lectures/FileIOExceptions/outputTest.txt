@@ -1,0 +1,3 @@
+I'm writing text to a file
+Isn't this neat
+We are in the file
