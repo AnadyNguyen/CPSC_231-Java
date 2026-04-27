@@ -16,43 +16,43 @@ public class Collections1{ //array larger strucutre holds individual smalle obje
         all classes are capital - convention
     */
 
-    // int num = 5; //primitive type
-    // System.out.println("Primitive: " + num);
-    // Integer numObject = num; //autoboxing (int -> Integer), we dont have to create secondary step
-    // // other way:
-    // Integer numObject = new Integer(num); //make Integer object
-    // //explicitly creating Integer Object from num(java bts)
-    // System.out.println("Wrapper object " + numObject);
-    // int numAgain = numObject;
+    int num = 5; //primitive type
+    System.out.println("Primitive: " + num);
+    Integer numObject = num; //autoboxing (int -> Integer), we dont have to create secondary step
+    // other way:
+    Integer numObject = new Integer(num); //make Integer object
+    //explicitly creating Integer Object from num(java bts)
+    System.out.println("Wrapper object " + numObject);
+    int numAgain = numObject;
     
 
-    //ArrayList Intro
-    //SYNTAX: ArrayList myList = new ArrayList(); //java will allow you to add all objects and primitive types to ArrayList, 
-    //random things and no connecion
-    //add card, student, int, etc.. to list
-    //if we pull student out, GetCourse method
-    //as we pull them out, we need to figure out what type of object they are in order to do actions
-    //*student has no GetRank method, unlike cards
-    //or ArrayList<DataType> myList = new ArrayList<>();
-    //or ArrayList<DataType> myList = new ArrayList <DataType>();
+    // ArrayList Intro
+    // SYNTAX: ArrayList myList = new ArrayList(); //java will allow you to add all objects and primitive types to ArrayList, 
+    // random things and no connecion
+    // add card, student, int, etc.. to list
+    // if we pull student out, GetCourse method
+    // as we pull them out, we need to figure out what type of object they are in order to do actions
+    // *student has no GetRank method, unlike cards
+    // or ArrayList<DataType> myList = new ArrayList<>();
+    // or ArrayList<DataType> myList = new ArrayList <DataType>();
 
-    // ArrayList<Integer> numbers = new ArrayList <>();
-    // numbers.add(10);
-    // numbers.add(20);
-    // numbers.add(30);
-    // System.out.println("ArrayList Contents: " + numbers); //ArrayList has a toString method, don't have to loop
+    ArrayList<Integer> numbers = new ArrayList <>();
+    numbers.add(10);
+    numbers.add(20);
+    numbers.add(30);
+    System.out.println("ArrayList Contents: " + numbers); //ArrayList has a toString method, don't have to loop
 
-    // int firstItem = numbers.get(0); //get index 0
-    // numbers.set(1,25); // set index 1 to the value 25
+    int firstItem = numbers.get(0); //get index 0
+    numbers.set(1,25); // set index 1 to the value 25
 
-    // System.out.println(firstItem);
-    // System.out.println(numbers);
+    System.out.println(firstItem);
+    System.out.println(numbers);
 
-    // //LinkedList: 
-    // LinkedList<String> names = new LinkedList<>(); //creating LinkedList of Strings
-    // names.add("Joe");
-    // names.add("Derek");
-    // names.add("Lezama");
+    //LinkedList: 
+    LinkedList<String> names = new LinkedList<>(); //creating LinkedList of Strings
+    names.add("Joe");
+    names.add("Derek");
+    names.add("Lezama");
 
         ArrayList<Integer> al = new ArrayList<>();
         LinkedList<Integer> ll = new LinkedList<>();
