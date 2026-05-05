@@ -18,7 +18,7 @@ public class Collections1{ //array larger strucutre holds individual smalle obje
 
     int num = 5; //primitive type
     System.out.println("Primitive: " + num);
-    Integer numObject = num; //autoboxing (int -> Integer), we dont have to create secondary step
+    // Integer numObject = num; //autoboxing (int -> Integer), we dont have to create secondary step
     // other way:
     Integer numObject = new Integer(num); //make Integer object
     //explicitly creating Integer Object from num(java bts)
