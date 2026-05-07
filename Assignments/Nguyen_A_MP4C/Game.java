@@ -43,17 +43,21 @@ public class Game { // Defines the Game class, which stores the players, pile, d
     }
 
     public int play() { // Starts the game and returns the winning player's number.
+        Player slappedPlayer = players.get(0); //whoever slapped the pile plays, but we start at index 0 for left of the dealer
         Player winningPlayer = players.getLast(); // Starts by assuming the last player in the list is winning.
 
         while (winningPlayer.getHand().size() != 52) { // Keeps looping until the tracked winning player has all 52 cards.
             winningPlayer = getPlayerWithMostCards(); // Updates winningPlayer to whichever player currently has the most cards.
+            pile.add(winningPlayer.)
             /*
             rules:
             face cards
             slaps
             first slap for 2 more players - random
-        
             */
+            if (pile.get) {
+                
+            }
 
 
         }
