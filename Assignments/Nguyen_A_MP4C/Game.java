@@ -43,21 +43,40 @@ public class Game { // Defines the Game class, which stores the players, pile, d
     }
 
     public int play() { // Starts the game and returns the winning player's number.
-        Player slappedPlayer = players.get(0); //whoever slapped the pile plays, but we start at index 0 for left of the dealer
-        Player winningPlayer = players.getLast(); // Starts by assuming the last player in the list is winning.
+        Player playingPlayer = players.getFirst(); //whoever slapped pile or plays facecards and gets the cards
+        Player winningPlayer = players.getFirst(); // Starts by assuming the first player in the list is winning.
 
         while (winningPlayer.getHand().size() != 52) { // Keeps looping until the tracked winning player has all 52 cards.
             winningPlayer = getPlayerWithMostCards(); // Updates winningPlayer to whichever player currently has the most cards.
-            pile.add(winningPlayer.)
+            pile.add(playingPlayer.playCard()) //whoever is playing add card to pile
+
+            //face card is played
+            if (pile.getLast().getRank() >= Card.JACK && pile.getLast().getRank() <= Card.ACE) {
+                int chances = pile.getLast().getRank() - 10; //since ace is 4, king is 3 and so forth, it corresponds with the 2nd digit of the rank so we can use .getRank()                
+                Player faceCarded = nextPlayer(playingPlayer); //player who has to play on the face card
+
+                //how many cards are played
+                while (chances > 0) {
+                    if (faceCarded.getHand().size() == 0) {
+                        break;
+                    }
+
+                    if (10 <= pile.getLast().getRank() && pile.getLast().getRank() <= Card.ACE) {
+                        chances = pile.getLast().getRank() - 10;
+                        playingPlayer = faceCarded
+                        faceCarded = nextPlayer(faceCarded);
+                        break;
+                    }
+                }
+            }
+
+
             /*
             rules:
             face cards
             slaps
             first slap for 2 more players - random
             */
-            if (pile.get) {
-                
-            }
 
 
         }
@@ -72,8 +91,17 @@ public class Game { // Defines the Game class, which stores the players, pile, d
                 leader = p; // Updates leader to this player because they have more cards.
             }
         }
-
         return leader; // Returns the player with the most cards.
+    }
+
+    //nextPlayer helper function to get next player
+    private Player nextPlayer (Player currPlayer) {
+        Player nextClockwisePlayer;
+        if (players.indexOf(currPlayer == players.size() - 1)) {
+            nextClockwisePlayer = players.get(0);
+        } else {
+            nextClockwisePlayer = players.get(players.indexOf(p) + 1);
+        }
     }
 
 
