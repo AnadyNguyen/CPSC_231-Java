@@ -47,27 +47,62 @@ public class Game { // Defines the Game class, which stores the players, pile, d
         Player winningPlayer = players.getFirst(); // Starts by assuming the first player in the list is winning.
 
         while (winningPlayer.getHand().size() != 52) { // Keeps looping until the tracked winning player has all 52 cards.
-            winningPlayer = getPlayerWithMostCards(); // Updates winningPlayer to whichever player currently has the most cards.
-            pile.add(playingPlayer.playCard()) //whoever is playing add card to pile
 
-            //face card is played
-            if (pile.getLast().getRank() >= Card.JACK && pile.getLast().getRank() <= Card.ACE) {
-                int chances = pile.getLast().getRank() - 10; //since ace is 4, king is 3 and so forth, it corresponds with the 2nd digit of the rank so we can use .getRank()                
+        //begin playing card
+            winningPlayer = getPlayerWithMostCards(); // Updates winningPlayer to whichever player currently has the most cards.
+            this.pile.add(playingPlayer.playCard()); //whoever is playing add card to pile
+
+            //if face card is played
+            if (this.pile.getLast().getRank() >= Card.JACK && this.pile.getLast().getRank() <= Card.ACE) {
+                int cardsNeeded = this.pile.getLast().getRank() - 10; //since ace is 4, king is 3 and so forth, it corresponds with the 2nd digit of the rank so we can use .getRank()                
                 Player faceCarded = nextPlayer(playingPlayer); //player who has to play on the face card
+                int round = 1;
 
                 //how many cards are played
-                while (chances > 0) {
-                    if (faceCarded.getHand().size() == 0) {
+                while (cardsNeeded > 0) { //while all cards that are needed to cover face card,
+
+                    if (faceCarded.getHand().size() == 0) { //if the person that got face carded's hand size is 0,
+                        break; //break
+                    }
+
+                    this.pile.add(faceCarded.playCard()); //face carded person plays card
+
+                    if (this.pile.getLast().getRank() == 10) { //if 
+                        playingPlayer = faceCarded;
                         break;
                     }
 
-                    if (10 <= pile.getLast().getRank() && pile.getLast().getRank() <= Card.ACE) {
-                        chances = pile.getLast().getRank() - 10;
-                        playingPlayer = faceCarded
+                    //if card played is 11/Jack or more
+                    if (11 <= this.pile.getLast().getRank() && this.pile.getLast().getRank() <= Card.ACE) {
+                        cardsNeeded = this.pile.getLast().getRank() - 10;
+                        playingPlayer = faceCarded;
                         faceCarded = nextPlayer(faceCarded);
-                        break;
+                    }
+                    else {
+                        cardsNeeded--;
                     }
                 }
+
+                System.out.println("Player " + playingPlayer.getPlayerNum() + " won the pile on a face card!");
+                System.out.println("Pile: " + this.pile);
+
+                while (this.pile.size() > 0) {
+                    playingPlayer.getHand().add(this.pile.removeFirst());
+                }
+
+
+                printRoundStatus(round);
+                round++;
+            //number cards
+            } else {
+                LinkedList<Player> slappable = new LinkedList<Player>(); //all players that can slap for that pile
+                
+                for (Player p: players) {
+                    if (p.getHand().size() > 0 && p.slaps(this.pile)) { //if hand is greater than 0 and slaps method on the pile returns true,
+                        slaps.add(p); //add player
+                    }
+                }
+                
             }
 
 
@@ -97,12 +132,24 @@ public class Game { // Defines the Game class, which stores the players, pile, d
     //nextPlayer helper function to get next player
     private Player nextPlayer (Player currPlayer) {
         Player nextClockwisePlayer;
-        if (players.indexOf(currPlayer == players.size() - 1)) {
+        if (players.indexOf(currPlayer) == players.size() - 1) {
             nextClockwisePlayer = players.get(0);
         } else {
-            nextClockwisePlayer = players.get(players.indexOf(p) + 1);
+            nextClockwisePlayer = players.get(players.indexOf(currPlayer) + 1);
+        }
+        return nextClockwisePlayer;
+    }
+
+    //print round header/counter plus line helper method
+    private void printRoundStatus(int round) {
+        System.out.println("\n-----Round " + round + "-----\n");
+        for (Player player : this.players) {
+            if (player.getHand().size() > 0) {
+                System.out.println(player + "\n");
+            }
         }
     }
+
 
 
     public LinkedList<Player> getPlayers() { // Getter method for the players list.
@@ -120,15 +167,25 @@ public class Game { // Defines the Game class, which stores the players, pile, d
 
 
     public static boolean topBottom(LinkedList<Card> pile) { // Static method meant to check the top-bottom slap pattern.
-        return true; // Placeholder: currently always says the pattern exists.
+            if (pile.size() < 2) {
+                return false;
+            }
+            return pile.getFirst() == pile.getLast();
+
     }
 
     public static boolean doubles(LinkedList<Card> pile) { // Static method meant to check the doubles slap pattern.
-        return true; // Placeholder: currently always says the pattern exists.
+        if (pile.size() > 1) {
+            return pile.getLast().equals(pile.get(pile.size() - 2));
+        }
+        return false;
     }
 
     public static boolean sandwich(LinkedList<Card> pile) { // Static method meant to check the sandwich slap pattern.
-        return true; // Placeholder: currently always says the pattern exists.
+        if (pile.size() < 3) {
+            return false;
+        }
+            return pile.getLast().equals(pile.get(pile.size() - 3));
     }
 
 }
