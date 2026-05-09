@@ -1,148 +1,270 @@
-import java.util.*; // Imports Java utility classes, including LinkedList and Random.
+/*
+Andy Nguyen
+Worked in partnership with N/A
+2493321
+annguyen@chapman.edu
+CPSC231-04
+MP4C - Egyptian Rat Slap
+Date completed: May 8, 2026
+Simulates a simplified Egyptian Rat Slap game with randomized player patterns.
+*/
 
-public class Game { // Defines the Game class, which stores the players, pile, dealer, and game logic.
+import java.util.*;
 
-    private LinkedList<Player> players; // Stores all Player objects in the game.
-    private LinkedList<Card> pile; // Stores the cards currently in the middle pile.
-    private Dealer dealer; // Stores the Dealer object that deals cards from a deck.
-    private String[] patterns = {"doubles", "top bottom", "sandwich"}; // Stores the possible slap patterns a player can get.
+/**
+ * Simulates a simplified game of Egyptian Rat Slap using players, a dealer, and a center pile.
+ *
+ * @author Andy Nguyen
+ * @version 1.0
+ */
+public class Game {
 
+    //private member vars
+    private LinkedList<Player> players;
+    private LinkedList<Card> pile;
+    private Dealer dealer;
+    private String[] patterns = {"doubles", "top bottom", "sandwich"};
 
-    Random rand = new Random(); // Creates a Random object for choosing random pattern indexes.
-    int patternIndex; // Stores the random index used to pick a pattern from the patterns array.
-    //default Constructor
-    public Game() { // Default constructor that creates a game with 2 players.
-        this.players = new LinkedList<Player>(); // Initializes the players list so Player objects can be added.
-        this.pile = new LinkedList<Card>(); // Initializes the pile as an empty list of cards.
-        this.dealer = new Dealer(); // Creates a new Dealer object with a full deck.
-        //deal cards to 2 players
-        for (int i = 1; i <= 2; i++) { // Loops twice to create players 1 and 2.
-            patternIndex = rand.nextInt(3); // Picks a random number from 0 to 2 for the pattern array.
-            this.players.add(new Player(i, dealer.deals(26), patterns[patternIndex])); // Creates a player with 26 cards and a random pattern, then adds them to players.
+    //random objects and pattern index to get pattern
+    Random rand = new Random();
+    int patternIndex;
+
+    /**
+     * Creates a default game with two players and deals the full deck evenly between them.
+     */
+    public Game() {
+        //construct players, piles and dealers for the game
+        this.players = new LinkedList<Player>();
+        this.pile = new LinkedList<Card>();
+        this.dealer = new Dealer();
+
+        //deal to 2 people - default, and then randomizes each player's pattern
+        for (int i = 1; i <= 2; i++) {
+            patternIndex = rand.nextInt(3);
+            this.players.add(new Player(i, dealer.deals(26), patterns[patternIndex]));
         }
     }
 
-    public Game(int numPlayers) { // Overloaded constructor that creates a game with numPlayers players.
-        this.players = new LinkedList<Player>(); // Initializes the players list.
-        this.pile = new LinkedList<Card>(); // Initializes the pile as an empty list.
-        this.dealer = new Dealer(); // Creates a new Dealer with a full deck.
+    /**
+     * Creates a game with the given number of players and deals the full deck among them.
+     *
+     * @param numPlayers the number of players in the game
+     */
+    public Game(int numPlayers) {
+        //same as default, construct stuff for game
+        this.players = new LinkedList<Player>();
+        this.pile = new LinkedList<Card>();
+        this.dealer = new Dealer();
 
-        //deal cards to num of players
-        int individualHands = 52 / numPlayers; // Calculates how many cards each player gets evenly.
-        int extraCards = 52 % numPlayers; // Calculates how many leftover cards remain after even dealing.
+        //logic to deal cards evenly
+        int individualHands = 52 / numPlayers;
+        int extraCards = 52 % numPlayers;
 
-        for (int i = 1; i <= numPlayers; i++) { // Loops once for each player number.
-            patternIndex = rand.nextInt(3); // Picks a random pattern index from 0 to 2.
-            this.players.add(new Player(i, dealer.deals(individualHands), patterns[patternIndex])); // Creates the player with their hand and pattern, then adds them to the list.
+        //deal to numPlayers, randomize each pattern
+        for (int i = 1; i <= numPlayers; i++) {
+            patternIndex = rand.nextInt(3);
+            this.players.add(new Player(i, dealer.deals(individualHands), patterns[patternIndex]));
         }
 
-        for (int i = 0; i < extraCards; i++) { // Loops once for each leftover card.
-            LinkedList<Card> extraCard = dealer.deals(1); // Deals one card and stores it in a one-card LinkedList.
-            players.get(i).getHand().add(extraCard.get(0)); // Adds that one extra card to player i's hand.
+        //deal extra card, probably to the first few people in players linked list
+        for (int i = 0; i < extraCards; i++) {
+            LinkedList<Card> extraCard = dealer.deals(1);
+            players.get(i).getHand().add(extraCard.get(0));
         }
     }
 
-    public int play() { // Starts the game and returns the winning player's number.
-        Player playingPlayer = players.getFirst(); //whoever slapped pile or plays facecards and gets the cards
-        Player winningPlayer = players.getFirst(); // Starts by assuming the first player in the list is winning.
+    /**
+     * Runs the Egyptian Rat Slap simulation until one player has all 52 cards.
+     *
+     * @return the player number of the winning player
+     */
+    public int play() {
+        //player variables 
+        Player playingPlayer = players.getFirst(); //first player that will play
+        Player winningPlayer = getPlayerWithMostCards(); //set winningPlayer to whoever has most cards, even if it is outside the loop
 
-        while (winningPlayer.getHand().size() != 52) { // Keeps looping until the tracked winning player has all 52 cards.
+        //initialize round to 1
+        int round = 1; 
 
-        //begin playing card
-            winningPlayer = getPlayerWithMostCards(); // Updates winningPlayer to whichever player currently has the most cards.
-            this.pile.add(playingPlayer.playCard()); //whoever is playing add card to pile
+        //game loop while the player with the most cards doesn't have 52 cards yet
+        while (winningPlayer.getHand().size() != 52) {
+            //track winningPlayer inside loop
+            winningPlayer = getPlayerWithMostCards();
 
-            //if face card is played
+            //if current player's hand has nothing, move on to next player
+            if (playingPlayer.getHand().size() == 0) {
+                playingPlayer = nextPlayer(playingPlayer);
+            }
+
+            //playingPlayer plays a card, and adds to the current LinkedList<Card> pile
+            this.pile.add(playingPlayer.playCard());
+
+            //if the pile's last card's rank is greater or equal to a Jack and its rank is also less than or equal to an Ace,
             if (this.pile.getLast().getRank() >= Card.JACK && this.pile.getLast().getRank() <= Card.ACE) {
-                int cardsNeeded = this.pile.getLast().getRank() - 10; //since ace is 4, king is 3 and so forth, it corresponds with the 2nd digit of the rank so we can use .getRank()                
-                Player faceCarded = nextPlayer(playingPlayer); //player who has to play on the face card
-                int round = 1;
+                /*  
+                cards needed to play kind of does nicely here,
+                because all the face card's 2nd digit corresponds to the number of chances players get
+                */
+                int cardsNeeded = this.pile.getLast().getRank() - 10;
 
-                //how many cards are played
-                while (cardsNeeded > 0) { //while all cards that are needed to cover face card,
+                //the next player is faceCarded, then needs to play however many cards on that specific face card
+                Player faceCarded = nextPlayer(playingPlayer);
+                boolean tenCanceled = false;
 
-                    if (faceCarded.getHand().size() == 0) { //if the person that got face carded's hand size is 0,
-                        break; //break
+                //while cards needed to cancel out the face card is more than 0,
+                while (cardsNeeded > 0) {
+
+                    //if whoever got faceCarded's hand is empty, skip to next availible player with cards through the continue line
+                    if (faceCarded.getHand().size() == 0) {
+                        faceCarded = nextPlayer(faceCarded);
+                        continue;
                     }
 
-                    this.pile.add(faceCarded.playCard()); //face carded person plays card
+                    //faceCarded player plays card for each card they need
+                    this.pile.add(faceCarded.playCard());
 
-                    if (this.pile.getLast().getRank() == 10) { //if 
-                        playingPlayer = faceCarded;
+                    //if the faceCarded player plays a 10, it cancels the face card and normal play continues
+                    if (this.pile.getLast().getRank() == 10) {
+                        tenCanceled = true;
+                        playingPlayer = nextPlayer(faceCarded);
                         break;
                     }
 
-                    //if card played is 11/Jack or more
-                    if (11 <= this.pile.getLast().getRank() && this.pile.getLast().getRank() <= Card.ACE) {
+                    //block of code for if the faceCarded player plays a face card.
+                    if (Card.JACK <= this.pile.getLast().getRank() && this.pile.getLast().getRank() <= Card.ACE) {
                         cardsNeeded = this.pile.getLast().getRank() - 10;
                         playingPlayer = faceCarded;
                         faceCarded = nextPlayer(faceCarded);
                     }
+
+                    //finally, cards needed decreases and loops back
                     else {
                         cardsNeeded--;
                     }
                 }
 
-                System.out.println("Player " + playingPlayer.getPlayerNum() + " won the pile on a face card!");
-                System.out.println("Pile: " + this.pile);
+                if (!tenCanceled) {
+                    //print out who won on the face card
+                    printRoundHeader(round);
+                    System.out.println("Player " + playingPlayer.getPlayerNum() + " won the pile on a face card!");
+                    System.out.println("Pile: " + this.pile);
 
-                while (this.pile.size() > 0) {
-                    playingPlayer.getHand().add(this.pile.removeFirst());
+                    //remove all cards from pile and give it to playingPlayer who played face card
+                    while (this.pile.size() > 0) {
+                        playingPlayer.getHand().add(this.pile.removeFirst());
+                    }
+
+                    //print round status
+                    printPlayersRemaining();
+                    round++; //next round
                 }
+            }
 
+            //block of code for not a face card
+            else {
 
-                printRoundStatus(round);
-                round++;
-            //number cards
-            } else {
-                LinkedList<Player> slappable = new LinkedList<Player>(); //all players that can slap for that pile
-                
+                //new linked list of players that can slap
+                LinkedList<Player> canSlap = new LinkedList<Player>();
+
+                //for each player in current player list: 
                 for (Player p: players) {
-                    if (p.getHand().size() > 0 && p.slaps(this.pile)) { //if hand is greater than 0 and slaps method on the pile returns true,
-                        slaps.add(p); //add player
+
+                    //if the player's hand is not empty and it is the pattern they are looking for,
+                    if (p.getHand().size() > 0 && p.slaps(this.pile)) {
+                        //add player to canSlap list
+                        canSlap.add(p);
                     }
                 }
-                
+
+                //if there are players that can slap the current pile,
+                if (canSlap.size() > 0) {
+                    //randomize the slap winner if there are multiple
+                    Player slapWinner = canSlap.get(rand.nextInt(canSlap.size()));
+                    //and set the playing player to the slapWinner so that whoever slaps is playing the next card
+                    playingPlayer = slapWinner;
+
+                    //print round header and status on who slapped the pile
+                    printRoundHeader(round);
+                    System.out.println("Player " + playingPlayer.getPlayerNum() + " slapped the pile!");
+                    System.out.println("Pile: " + this.pile);
+
+                    //give the pile to whoever slapped, since slapWinner is playingPlayer now
+                    while (this.pile.size() > 0) {
+                        playingPlayer.getHand().add(this.pile.removeFirst());
+                    }
+
+                    //print player status
+                    printPlayersRemaining();
+                    round++;
+                }
+                else {
+                    //move on to next player to play card
+                    playingPlayer = nextPlayer(playingPlayer);
+                }
             }
-
-
-            /*
-            rules:
-            face cards
-            slaps
-            first slap for 2 more players - random
-            */
-
-
         }
-        return winningPlayer.getPlayerNum(); // Returns the player number of the tracked winner.
+        //outside while loop, so while run once the winningPlayer gets 52 cards, and then returns that player
+        return winningPlayer.getPlayerNum();
     }
 
-    private Player getPlayerWithMostCards() { // Helper method that finds the player with the biggest hand.
-        Player leader = players.get(0); // Starts by assuming the first player has the most cards.
+    /**
+     * Finds the player who currently has the most cards.
+     *
+     * @return the player with the largest hand
+     */
+    private Player getPlayerWithMostCards() {
+        Player leader = players.get(0);
 
-        for (Player p : players) { // Loops through every player in the game.
-            if (p.getHand().size() > leader.getHand().size()) { // Checks if this player has more cards than the current leader.
-                leader = p; // Updates leader to this player because they have more cards.
+        //simple update the max tracker
+        for (Player p : players) {
+            if (p.getHand().size() > leader.getHand().size()) {
+                leader = p;
             }
         }
-        return leader; // Returns the player with the most cards.
+        return leader;
     }
 
-    //nextPlayer helper function to get next player
-    private Player nextPlayer (Player currPlayer) {
+    /**
+     * Finds the next clockwise player who still has cards.
+     *
+     * @param currPlayer the player whose turn just occurred
+     * @return the next player with at least one card
+     */
+    private Player nextPlayer(Player currPlayer) {
+        //new player object to represent next player
         Player nextClockwisePlayer;
+
+        //if the player is at the end of the linked list of players, go back to 0 index in the list
         if (players.indexOf(currPlayer) == players.size() - 1) {
             nextClockwisePlayer = players.get(0);
-        } else {
+        }
+        //else, move on to next player
+        else {
             nextClockwisePlayer = players.get(players.indexOf(currPlayer) + 1);
         }
+
+        //if the next player's hand is empty, recursively call nextPlayer method on the next player in clockwise order until it returns false
+        if (nextClockwisePlayer.getHand().size() == 0) {
+            return nextPlayer(nextClockwisePlayer);
+        }
+        //return at the end
         return nextClockwisePlayer;
     }
 
-    //print round header/counter plus line helper method
-    private void printRoundStatus(int round) {
+    /**
+     * Prints a formatted round header.
+     *
+     * @param round the current round number
+     */
+    private void printRoundHeader(int round) {
         System.out.println("\n-----Round " + round + "-----\n");
+    }
+
+    /**
+     * Prints every player who still has cards and their current hand.
+     */
+    private void printPlayersRemaining() {
+        System.out.println("\nPlayers remaining and their hands: ");
         for (Player player : this.players) {
             if (player.getHand().size() > 0) {
                 System.out.println(player + "\n");
@@ -150,42 +272,87 @@ public class Game { // Defines the Game class, which stores the players, pile, d
         }
     }
 
-
-
-    public LinkedList<Player> getPlayers() { // Getter method for the players list.
-        return this.players; // Returns all players.
+    /**
+     * Returns the list of players in turn order.
+     *
+     * @return the list of players
+     */
+    public LinkedList<Player> getPlayers() {
+        return this.players;
     }
 
-    public LinkedList<Card> getPile() { // Getter method for the pile.
-        return this.pile; // Returns the current pile.
+    /**
+     * Returns the current center pile.
+     *
+     * @return the pile of cards currently in play
+     */
+    public LinkedList<Card> getPile() {
+        return this.pile;
     }
 
-    public String[] getPattern() { // Getter method for the pattern array.
-        return this.patterns; // Returns the available slap patterns.
+    /**
+     * Returns the dealer used by this game.
+     *
+     * @return the game's dealer
+     */
+    public Dealer getDealer() {
+        return this.dealer;
     }
 
-
-
-    public static boolean topBottom(LinkedList<Card> pile) { // Static method meant to check the top-bottom slap pattern.
-            if (pile.size() < 2) {
-                return false;
-            }
-            return pile.getFirst() == pile.getLast();
-
+    /**
+     * Returns the valid slap patterns for this game.
+     *
+     * @return the array of valid pattern names
+     */
+    public String[] getPattern() {
+        return this.patterns;
     }
 
-    public static boolean doubles(LinkedList<Card> pile) { // Static method meant to check the doubles slap pattern.
+    /**
+     * Returns the valid slap patterns for this game.
+     *
+     * @return the array of valid pattern names
+     */
+    public String[] getPatterns() {
+        return this.patterns;
+    }
+
+    /**
+     * Checks whether the newest card in the pile matches the first card played in the pile.
+     *
+     * @param pile the current center pile
+     * @return true if the top-bottom pattern is present, false otherwise
+     */
+    public static boolean topBottom(LinkedList<Card> pile) {
+        if (pile.size() < 2) {
+            return false;
+        }
+        return pile.getFirst().equals(pile.getLast());
+    }
+
+    /**
+     * Checks whether the two newest cards in the pile have the same rank.
+     *
+     * @param pile the current center pile
+     * @return true if the doubles pattern is present, false otherwise
+     */
+    public static boolean doubles(LinkedList<Card> pile) {
         if (pile.size() > 1) {
             return pile.getLast().equals(pile.get(pile.size() - 2));
         }
         return false;
     }
 
-    public static boolean sandwich(LinkedList<Card> pile) { // Static method meant to check the sandwich slap pattern.
+    /**
+     * Checks whether the newest card matches the card two positions below it.
+     *
+     * @param pile the current center pile
+     * @return true if the sandwich pattern is present, false otherwise
+     */
+    public static boolean sandwich(LinkedList<Card> pile) {
         if (pile.size() < 3) {
             return false;
         }
-            return pile.getLast().equals(pile.get(pile.size() - 3));
+        return pile.getLast().equals(pile.get(pile.size() - 3));
     }
-
 }

@@ -1,19 +1,29 @@
 /*
 Andy Nguyen
-CPSC231-04
-annguyen@chapman.edu
+Worked in partnership with N/A
 2493321
-April 24, 2026
-MP4B - Creates and manages a 52-card deck that can be copied, printed, counted, and dealt from randomly.
+annguyen@chapman.edu
+CPSC231-04
+MP4C - Egyptian Rat Slap
+Date completed: April 24, 2026
+Creates and manages a 52-card deck that can be copied, printed, counted, and dealt from randomly.
 */
 
 import java.util.*;
 
+/**
+ * Represents a standard deck of 52 playing cards.
+ *
+ * @author Andy Nguyen
+ * @version 1.0
+ */
 public class Deck {
     //the cards of this deck. in other words, the member variables of this class
     private LinkedList<Card> m_cards;
 
-    //default constructor
+    /**
+     * Creates a full standard deck with all suits and ranks.
+     */
     public Deck () { 
         m_cards = new LinkedList<Card>();
 
@@ -27,7 +37,11 @@ public class Deck {
     //m_cards now has all 52 cards(in order)
     //now, we must copy all of those card into a new object, so changing the old one doesn't change this one
 
-    //deep copy constructor
+    /**
+     * Creates a deep copy of another deck.
+     *
+     * @param initDeck the deck to copy
+     */
     public Deck(Deck initDeck){ //copyDeck is going to be a deep copy of m_cards
         m_cards = new LinkedList<Card>(); //a deck in this instance of this certain object(I think)
 
@@ -42,7 +56,11 @@ public class Deck {
         }
     }
 
-    //toString method 
+    /**
+     * Returns the cards in the deck as readable text.
+     *
+     * @return a String listing the cards in the deck
+     */
     public String toString() {
         String deckOfCards = "";
         for (Card card : m_cards) {
@@ -51,12 +69,20 @@ public class Deck {
         return deckOfCards;
     }
 
-    //size method
+    /**
+     * Returns the number of cards currently in the deck.
+     *
+     * @return the deck size
+     */
     public int size() {
         return m_cards.size(); //return the member deck's size in this instance of the object
     }
 
-    //deal method
+    /**
+     * Removes and returns one random card from the deck.
+     *
+     * @return a randomly dealt card
+     */
     public Card deal() {
         Random random = new Random(); //random object
         Card randomDealtCard = null; //make a random card object

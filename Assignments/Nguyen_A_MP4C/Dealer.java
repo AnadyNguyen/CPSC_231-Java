@@ -1,24 +1,39 @@
 /*
 Andy Nguyen
-CPSC231-04
-annguyen@chapman.edu
+Worked in partnership with N/A
 2493321
-April 24, 2026
-MP4B - Uses a Deck object to deal random hands of cards and report how many cards remain.
+annguyen@chapman.edu
+CPSC231-04
+MP4C - Egyptian Rat Slap
+Date completed: April 24, 2026
+Uses a Deck object to deal random hands of cards and report how many cards remain.
 */
 
 import java.util.*;
 
+/**
+ * Represents a dealer that owns a deck and deals cards from it.
+ *
+ * @author Andy Nguyen
+ * @version 1.0
+ */
 public class Dealer {
     //private attribute
     private Deck m_deck;
 
-    //default constructor
+    /**
+     * Creates a dealer with a new full deck.
+     */
     public Dealer() {
         m_deck = new Deck(); //makes 52 cards, from the default constructor we built
     }
 
-    //deals method
+    /**
+     * Deals up to the requested number of cards from the deck.
+     *
+     * @param n the number of cards requested
+     * @return a hand containing the dealt cards
+     */
      public LinkedList<Card> deals(int n) { //n represents amount of cards being dealt
 
         LinkedList<Card> dealtHand = new LinkedList<Card>(); //initialize empty linked list to populate cards with
@@ -36,12 +51,20 @@ public class Dealer {
         return dealtHand; //return linked list after dealing all cards
      }
 
-    //size method
+    /**
+     * Returns the number of cards left in the dealer's deck.
+     *
+     * @return the deck size
+     */
     public int size() {
         return m_deck.size();
     }
 
-    //toString method
+    /**
+     * Returns the dealer's remaining deck as a String.
+     *
+     * @return a String representation of the dealer's deck
+     */
     public String toString() {
         return m_deck.toString();
     }
